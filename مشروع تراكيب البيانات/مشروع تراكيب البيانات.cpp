@@ -15,198 +15,135 @@ enum enStudentOps {
 	StudentOps_Exit
 };
 
-
-bool fAddStudent(Student student )
+class StudentManager
 {
-	// نفتح الملف للإلحاق
-    fstream file("students.txt", ios::out | ios::app); 
 
-    if (!file) {
-        cout << "File could not be opened!\n";
-        return false;
-    }
+private:
 
-    // هنا نضيف الطالب للملف
-    file << student.id << "##" << student.firstname<< "##" << student.lastname<< "##" << student.major<< "##" << student.email << "##" << student.phone << "##" << student.GPA << "##" << student.level << "##" << '\n';
 
-    
+	clsLinkedList<Student> _linkedList;
+	string _filename = "students.txt";
 
-    
-    file.close(); // نغلق الملف
-}
-
-bool fReadStudents(clsLinkedList<Student> &linkedList)
-{
-	// نفتح الملف للقراءة
-	fstream file("students.txt", ios::in);
-
-	if (!file) {
-		cout << "File could not be opened!\n";
-		return false;
-	}
-
-	// هنا نقوم بقراءة الطلاب من الملف
-	while (!file.eof())
+	bool _fReadStudents()
 	{
+		// نفتح الملف للقراءة
+		fstream file(_filename, ios::in);
 
-		
-
-		Student student;
-		file >> student.id;
-		file.ignore(2); // Ignore the double delimiter (##)
-
-		// Read the rest of the fields
-		getline(file, student.firstname, '#');
-		file.ignore(); // Ignore the second '#'
-
-		if (student.firstname.length() == 0)
-		{
-			break;
+		if (!file) {
+			cout << "File could not be opened!\n";
+			return false;
 		}
 
-		getline(file, student.lastname, '#');
-		file.ignore();
+		// هنا نقوم بقراءة الطلاب من الملف
+		while (!file.eof())
+		{
 
-		getline(file, student.major, '#');
-		file.ignore();
 
-		getline(file, student.email, '#');
-		file.ignore();
 
-		getline(file, student.phone, '#');
-		file.ignore();
+			Student student;
+			file >> student.id;
+			file.ignore(2); // Ignore the double delimiter (##)
 
-		file >> student.GPA;
-		file.ignore(2); // Ignore '##' after GPA
+			// Read the rest of the fields
+			getline(file, student.firstname, '#');
+			file.ignore(); // Ignore the second '#'
 
-		getline(file, student.level, '#');
-		file.ignore(); // Ignore the second '#'
-		linkedList.AddNode(student);
-		//student.PrintStudentInfo();
+			if (student.firstname.length() == 0)
+			{
+				break;
+			}
+
+			getline(file, student.lastname, '#');
+			file.ignore();
+
+			getline(file, student.major, '#');
+			file.ignore();
+
+			getline(file, student.email, '#');
+			file.ignore();
+
+			getline(file, student.phone, '#');
+			file.ignore();
+
+			file >> student.GPA;
+			file.ignore(2); // Ignore '##' after GPA
+
+			getline(file, student.level, '#');
+			file.ignore(); // Ignore the second '#'
+			_linkedList.AddNode(student);
+			
+		}
+
+		file.close(); // نغلق الملف
+		return true;
 	}
 
-	file.close(); // نغلق الملف
-}
+public:
 
-bool AddAllStudents(clsLinkedList<Student> &linkedList)
-{
-	// نفتح الملف للإلحاق
-	fstream file("students.txt", ios::out );
 
-	if (!file) {
-		cout << "File could not be opened!\n";
-		return false;
-	}
 
-	// هنا نضيف الطالب للملف
-	clsNode<Student>* temp = linkedList.head;
-	while(temp != nullptr)
+	StudentManager(string filename)
 	{
-		Student student = temp->data;
+		_filename = filename;
+		_fReadStudents();
+	}
+
+	bool fAddStudent(Student student)
+	{
+		// نفتح الملف للإلحاق
+		fstream file(_filename, ios::out | ios::app);
+
+		if (!file) {
+			cout << "File could not be opened!\n";
+			return false;
+		}
+
+		// هنا نضيف الطالب للملف
 		file << student.id << "##" << student.firstname << "##" << student.lastname << "##" << student.major << "##" << student.email << "##" << student.phone << "##" << student.GPA << "##" << student.level << "##" << '\n';
-		temp = temp->next;
+
+
+
+
+		file.close(); // نغلق الملف
 	}
-
-
-
-
-	file.close(); // نغلق الملف
-}
-
-void AddStudent(clsLinkedList<Student> &linkedList)
-{
-	Student student;
-	cout << "Enter Student ID: ";
-	cin >> student.id;
-	cin.ignore();
-	cout << "Enter Student First Name: ";
-	getline(cin, student.firstname);
-	cout << "Enter Student Last Name: ";
-	getline(cin, student.lastname);
-	cout << "Enter Student Email: ";
-	getline(cin, student.email);
-	cout << "Enter Student Phone: ";
-	cin >> student.phone;
-	cin.ignore();
-	cout << "Enter Student Major: ";
-	getline(cin, student.major);
-	cout << "Enter Student Level: ";
-	cin >> student.level;
-	cout << "Enter Student GPA: ";
-	cin >> student.GPA;
 
 	
-	fAddStudent(student);
-	linkedList.AddNode(student);
 
-}
-
-
-int Prompt()
-{
-
-	int promptResult;
-
-	cout << "1. Show Students" << endl;
-	cout << "2. Show Student" << endl;
-	cout << "3. Add Student" << endl;
-	cout << "4. Edit Student" << endl;
-	cout << "5. Remove Student" << endl;
-	cout << "6. Exit" << endl;
-	cout << "Enter your choice: ";
-	cin >> promptResult;
-
-	return promptResult; 
-
-}
-
-void ActionResult(int promptResult, clsLinkedList<Student> &linkedList)
-{
-
-	switch (promptResult)
-	{
-
-	case enStudentOps::StudentOps_ShowStudents:
-	{
-		linkedList.Traverse();
-		break;
-	}
-
-	case enStudentOps::StudentOps_ShowStudent:
-	{
-	
-		cout << "Enter Student ID: ";
-		int id;
-		cin >> id;
-		Student student = linkedList.Search(id);
-		if (student.firstname == "")
-		{
-			cout << "Student not found" << endl;
-		}
-		else
-		{
-			student.PrintStudentInfo();
-		}
-
-		break;
-	}
-
-
-	case enStudentOps::StudentOps_AddStudent:
-	{
-		AddStudent(linkedList);
-		break;
-	}
-
-	case enStudentOps::StudentOps_EditStudent:
-	{
-		cout << "Enter Student ID: ";
-		int id;
-		cin >> id;
-		cin.ignore();
-		Student student = linkedList.Search(id);
-		student.PrintStudentInfo();
 		
+
+	// يمكن تحذف لأن اللي تحتها تكفي
+	bool fAddAllStudents()
+	{
+		// نفتح الملف للإلحاق
+		fstream file(_filename, ios::out);
+
+		if (!file) {
+			cout << "File could not be opened!\n";
+			return false;
+		}
+
+		// هنا نضيف الطالب للملف
+		clsNode<Student>* temp = _linkedList.head;
+		while (temp != nullptr)
+		{
+			Student student = temp->data;
+			file << student.id << "##" << student.firstname << "##" << student.lastname << "##" << student.major << "##" << student.email << "##" << student.phone << "##" << student.GPA << "##" << student.level << "##" << '\n';
+			temp = temp->next;
+		}
+
+
+
+
+		file.close(); // نغلق الملف
+	}
+
+	// تضيف الطالب في القوائم المترابطة والملف
+	void AddStudent()
+	{
+		Student student;
+		cout << "Enter Student ID: ";
+		cin >> student.id;
+		cin.ignore();
 		cout << "Enter Student First Name: ";
 		getline(cin, student.firstname);
 		cout << "Enter Student Last Name: ";
@@ -222,64 +159,213 @@ void ActionResult(int promptResult, clsLinkedList<Student> &linkedList)
 		cin >> student.level;
 		cout << "Enter Student GPA: ";
 		cin >> student.GPA;
-		
-		linkedList.Update(student);
-		
 
-			
-		break;
+
+		fAddStudent(student);
+		_linkedList.AddNode(student);
+
 	}
 
-	case enStudentOps::StudentOps_RemoveStudent:
+	bool EditStudent()
 	{
 		cout << "Enter Student ID: ";
 		int id;
 		cin >> id;
-		Student student = linkedList.Search(id);
+		cin.ignore();
+		Student student = _linkedList.Search(id);
+		if (student.firstname.empty())
+		{
+			cout << "Student not found" << endl;
+			return false;
+		}
+
+		student.PrintStudentInfo();
+
+
+		cout << "Are you sure you want to Edit this student? (Y/N): ";
+		char confirm;
+		cin >> confirm;
+		if (confirm == 'N' || confirm == 'n')
+		{
+			
+			return false;
+		}
+
+		cout << "Enter Student First Name: ";
+		getline(cin, student.firstname);
+		cout << "Enter Student Last Name: ";
+		getline(cin, student.lastname);
+		cout << "Enter Student Email: ";
+		getline(cin, student.email);
+		cout << "Enter Student Phone: ";
+		cin >> student.phone;
+		cin.ignore();
+		cout << "Enter Student Major: ";
+		getline(cin, student.major);
+		cout << "Enter Student Level: ";
+		cin >> student.level;
+		cout << "Enter Student GPA: ";
+		cin >> student.GPA;
+
+		
+		_linkedList.Update(student);
+		return true;
+	}
+
+	void PrintStudents()
+	{
+		_linkedList.Traverse();
+	}
+	void PrintStudent()
+	{
+		cout << "Enter Student ID: ";
+		int id;
+		cin >> id;
+		Student student = _linkedList.Search(id);
+		if (student.firstname == "")
+		{
+			cout << "Student not found" << endl;
+		}
+		else
+		{
+			student.PrintStudentInfo();
+		}
+	}
+
+	bool RemoveStudent()
+	{
+		cout << "Enter Student ID: ";
+		int id;
+		cin >> id;
+		Student student = _linkedList.Search(id);
+		if (student.firstname.empty())
+		{
+			cout << "Student not found" << endl;
+			return false;
+		}
 		student.PrintStudentInfo();
 		cout << "Are you sure you want to delete this student? (Y/N): ";
 		char confirm;
 		cin >> confirm;
 		if (confirm == 'Y' || confirm == 'y')
 		{
-			linkedList.DeleteById(student.id);
+			_linkedList.DeleteById(student.id);
+			return true;
 		}
-		
-		break;
+
+		return false;
 	}
 
-
-	case enStudentOps::StudentOps_Exit:
+	int Prompt()
 	{
-		AddAllStudents(linkedList);
-		exit(0);
-		break;
+
+		int promptResult;
+
+		cout << "1. Show Students" << endl;
+		cout << "2. Show Student" << endl;
+		cout << "3. Add Student" << endl;
+		cout << "4. Edit Student" << endl;
+		cout << "5. Remove Student" << endl;
+		cout << "6. Exit" << endl;
+		cout << "Enter your choice: ";
+		cin >> promptResult;
+
+		return promptResult;
+
+	}
+
+	void ActionResult(int promptResult)
+	{
+
+		switch (promptResult)
+		{
+
+		case enStudentOps::StudentOps_ShowStudents:
+		{
+			PrintStudents();
+			break;
+		}
+
+		case enStudentOps::StudentOps_ShowStudent:
+		{
+
+			PrintStudent();
+
+			break;
+		}
+
+
+		case enStudentOps::StudentOps_AddStudent:
+		{
+			AddStudent();
+			break;
+		}
+
+		case enStudentOps::StudentOps_EditStudent:
+		{
+			EditStudent();
+
+
+			break;
+		}
+
+		case enStudentOps::StudentOps_RemoveStudent:
+		{
+			RemoveStudent();
+
+			break;
+		}
+
+
+		case enStudentOps::StudentOps_Exit:
+		{
+			fAddAllStudents();
+			exit(0);
+			break;
+		}
+
+
+		default:
+			break;
+		}
+
+
 	}
 
 
-	default:
-		break;
+	void Run()
+	{
+		int promptResult;
+		while (1)
+		{
+			promptResult = Prompt();
+			ActionResult(promptResult);
+			system("pause");
+			system("cls");
+
+		}
 	}
 
-
-}
+	~StudentManager()
+	{
+		fAddAllStudents();
+		
+		while (_linkedList.head != nullptr)
+		{
+			clsNode<Student>* next = _linkedList.head->next;
+			delete _linkedList.head;
+			_linkedList.head = next;
+		}
+	}
+};
 
 int main()
 {
     
-	clsLinkedList<Student> linkedList;
-	fReadStudents(linkedList);
+	StudentManager studentManager("students.txt");
 	
 	
-	int promptResult;
-
-	while (1)
-	{
-		promptResult = Prompt();
-		ActionResult(promptResult, linkedList);
-
-
-	}
+	studentManager.Run();
 
 
 
