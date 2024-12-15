@@ -156,6 +156,7 @@ public:
             clsNode<T>* temp2 = head;
             head = head->next;
             delete temp2;
+            length--;
             return;  // إنهاء الدالة بعد حذف الرأس
         }
 
@@ -222,6 +223,7 @@ public:
         }
 
 
+        tail = temp;
         tail = temp;
         length--;
     }
