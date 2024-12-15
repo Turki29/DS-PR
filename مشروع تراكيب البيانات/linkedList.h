@@ -168,12 +168,14 @@ public:
 
                 temp->next = temp->next->next;
                 delete temp2;
+
                 std::cout << "Value Deleted Successfully" << std::endl << std::endl;
+                length--;
                 return;
             }
 
             temp = temp->next;
-            length--;
+            
         }
     }
 

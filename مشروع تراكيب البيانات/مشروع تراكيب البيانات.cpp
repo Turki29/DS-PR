@@ -81,13 +81,14 @@ private:
 public:
 
 
-
+	// منشئ الكلاس
 	StudentManager(string filename)
 	{
 		_filename = filename;
 		_fReadStudents();
 	}
 
+	// يضيف الطالب للملف
 	bool fAddStudent(Student student)
 	{
 		// نفتح الملف للإلحاق
@@ -107,11 +108,7 @@ public:
 		file.close(); // نغلق الملف
 	}
 
-	
-
-		
-
-	// يمكن تحذف لأن اللي تحتها تكفي
+	// يضيف الطالب للملف
 	bool fAddAllStudents()
 	{
 		// نفتح الملف للإلحاق
@@ -165,7 +162,9 @@ public:
 		_linkedList.AddNode(student);
 
 	}
+	
 
+	// يعدّل الطالب في القوائم المترابطة
 	bool EditStudent()
 	{
 		cout << "Enter Student ID: ";
@@ -190,7 +189,7 @@ public:
 			
 			return false;
 		}
-
+		cin.ignore();
 		cout << "Enter Student First Name: ";
 		getline(cin, student.firstname);
 		cout << "Enter Student Last Name: ";
@@ -212,10 +211,13 @@ public:
 		return true;
 	}
 
+	// يطبع الطلاب كلهم
 	void PrintStudents()
 	{
 		_linkedList.Traverse();
 	}
+
+	// يطبع طالب معين 
 	void PrintStudent()
 	{
 		cout << "Enter Student ID: ";
@@ -232,6 +234,7 @@ public:
 		}
 	}
 
+	// يحذف طالب
 	bool RemoveStudent()
 	{
 		cout << "Enter Student ID: ";
@@ -243,6 +246,9 @@ public:
 			cout << "Student not found" << endl;
 			return false;
 		}
+
+		cin.ignore();
+
 		student.PrintStudentInfo();
 		cout << "Are you sure you want to delete this student? (Y/N): ";
 		char confirm;
@@ -256,13 +262,14 @@ public:
 		return false;
 	}
 
+	// القائمة الرئيسة
 	int Prompt()
 	{
 
 		int promptResult;
 
 		cout << "1. Show Students" << endl;
-		cout << "2. Show Student" << endl;
+		cout << "2. Search Student" << endl;
 		cout << "3. Add Student" << endl;
 		cout << "4. Edit Student" << endl;
 		cout << "5. Remove Student" << endl;
@@ -274,6 +281,7 @@ public:
 
 	}
 
+	// منظم الأوامر
 	void ActionResult(int promptResult)
 	{
 
@@ -332,7 +340,7 @@ public:
 
 	}
 
-
+	// يشغل البرنامج
 	void Run()
 	{
 		int promptResult;
